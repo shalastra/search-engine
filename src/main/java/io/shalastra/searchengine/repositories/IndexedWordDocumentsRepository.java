@@ -2,6 +2,7 @@ package io.shalastra.searchengine.repositories;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
@@ -27,6 +28,6 @@ public class IndexedWordDocumentsRepository extends HashMap<Word, LinkedHashSet<
   }
 
   private List<Word> splitDocument(Document document) {
-    return Arrays.stream(document.getDocument().split(SPLIT_REGEX)).map(Word::new).collect(Collectors.toList());
+    return Stream.of(document.getDocument().split(SPLIT_REGEX)).map(Word::new).collect(Collectors.toList());
   }
 }

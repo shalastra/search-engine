@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
 
-public class IndexedWordsRepository extends HashMap<Word, LinkedHashSet<Document>> {
+public class IndexedWordDocumentsRepository extends HashMap<Word, LinkedHashSet<Document>> {
 
   private static final String SPLIT_REGEX = "\\P{L}+";
 

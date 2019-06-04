@@ -1,6 +1,6 @@
 package io.shalastra.searchengine;
 
-import io.shalastra.searchengine.repositories.IndexedWordsRepository;
+import io.shalastra.searchengine.repositories.IndexedWordDocumentsRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class SearchEngineConfiguration {
 
   @Bean
-  public IndexedWordsRepository indexedWordsRepository() {
-    return new IndexedWordsRepository();
+  public IndexedWordDocumentsRepository indexedWordsRepository() {
+    return new IndexedWordDocumentsRepository();
   }
 }

@@ -4,7 +4,7 @@ import java.util.LinkedHashSet;
 
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
-import io.shalastra.searchengine.repositories.IndexedWordsRepository;
+import io.shalastra.searchengine.repositories.IndexedWordDocumentsRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 public class SearchEngineApplicationTests {
 
   @Autowired
-  private IndexedWordsRepository indexedWordsRepository;
+  private IndexedWordDocumentsRepository indexedWordDocumentsRepository;
 
   private LinkedHashSet<Document> documents;
 
@@ -40,17 +40,17 @@ public class SearchEngineApplicationTests {
   public void saveDocumentsByContainingGivenWord() {
     Word word = new Word("dog");
 
-    indexedWordsRepository.put(word, documents);
+    indexedWordDocumentsRepository.put(word, documents);
 
-    assertEquals(indexedWordsRepository.get(word).size(), documents.size());
+    assertEquals(indexedWordDocumentsRepository.get(word).size(), documents.size());
   }
 
   @Test
   public void saveDocuments_ShouldReturnInvertedIndex() {
-    indexedWordsRepository.initializeInvertedIndex(documents);
+    indexedWordDocumentsRepository.initializeInvertedIndex(documents);
 
     Word word = new Word("dog");
 
-    assertEquals(documents, indexedWordsRepository.get(word));
+    assertEquals(documents, indexedWordDocumentsRepository.get(word));
   }
 }

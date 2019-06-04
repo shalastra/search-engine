@@ -6,13 +6,18 @@ import java.util.Set;
 
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class IndexedWordDocumentsRepository extends HashMap<Word, LinkedHashSet<Document>> {
 
+  @Autowired
+  private WordFrequenciesRepository wordFrequenciesRepository;
 
   public void initializeInvertedIndex(Set<Document> documents) {
     for (Document document : documents) {
       document.splitDocument().forEach(word -> {
+        wordFrequenciesRepository.calculateWordFrequency(word, document);
+
         LinkedHashSet<Document> documentsContainingGivenWord = get(word);
 
         if (documentsContainingGivenWord == null || documentsContainingGivenWord.isEmpty()) {

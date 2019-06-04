@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class IndexedWordDocumentRepositoryTest {
+public class IndexedWordDocumentsRepositoryTest {
 
   @Autowired
   private IndexedWordDocumentsRepository indexedWordDocumentsRepository;

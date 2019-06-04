@@ -1,13 +1,11 @@
 package io.shalastra.searchengine.models;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
 public class Word {
 
-  @Getter
-  @Setter
   private String word;
 }

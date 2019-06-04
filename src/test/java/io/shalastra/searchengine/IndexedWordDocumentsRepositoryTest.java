@@ -4,8 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 
-import javax.print.Doc;
-
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
 import io.shalastra.searchengine.repositories.IndexedWordDocumentsRepository;
@@ -52,9 +50,9 @@ public class IndexedWordDocumentsRepositoryTest {
 
   @Test
   public void saveDocuments_ShouldReturnInvertedIndex() {
-    indexedWordDocumentsRepository.initializeInvertedIndex(documents);
-
     Word word = new Word("dog");
+
+    indexedWordDocumentsRepository.initializeInvertedIndex(documents);
 
     //Assertion is valid since all documents contain the word "dog"
     assertEquals(documents, indexedWordDocumentsRepository.get(word));
@@ -62,14 +60,29 @@ public class IndexedWordDocumentsRepositoryTest {
 
   @Test
   public void getDocumentLength_ShouldReturnNumberOfWords() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-    Method getDocumentLengthMethod = IndexedWordDocumentsRepository.class.getDeclaredMethod("getDocumentLength", Document.class);
-    getDocumentLengthMethod.setAccessible(true);
-
     Document document = documents.iterator().next();
     int expectedLength = document.getDocument().split(SPLIT_REGEX).length;
+
+    Method getDocumentLengthMethod = IndexedWordDocumentsRepository.class.getDeclaredMethod("getDocumentLength", Document.class);
+    getDocumentLengthMethod.setAccessible(true);
 
     int wordsNumber = (int) getDocumentLengthMethod.invoke(indexedWordDocumentsRepository, document);
 
     assertEquals(expectedLength, wordsNumber);
+  }
+
+  @Test
+  public void getWordFrequencyInDocuments_ShouldReturnNumberOfDocuments() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    Word word = new Word("brown");
+    int expectedFrequency = 2;
+
+    indexedWordDocumentsRepository.initializeInvertedIndex(documents);
+
+    Method getWordFrequencyInDocumentsMethod = IndexedWordDocumentsRepository.class.getDeclaredMethod("getWordFrequencyInDocuments", Word.class);
+    getWordFrequencyInDocumentsMethod.setAccessible(true);
+
+    int documentsNumber = (int) getWordFrequencyInDocumentsMethod.invoke(indexedWordDocumentsRepository, word);
+
+    assertEquals(expectedFrequency, documentsNumber);
   }
 }

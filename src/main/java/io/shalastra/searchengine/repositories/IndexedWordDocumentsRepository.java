@@ -1,6 +1,9 @@
 package io.shalastra.searchengine.repositories;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,6 +32,10 @@ public class IndexedWordDocumentsRepository extends HashMap<Word, LinkedHashSet<
 
   private int getDocumentLength(Document document) {
     return splitDocument(document).size();
+  }
+
+  private int getWordFrequencyInDocuments(Word word) {
+    return get(word).size();
   }
 
   private List<Word> splitDocument(Document document) {

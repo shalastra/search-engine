@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class SearchEngineConfiguration {
 
   @Bean
-  public IndexedWordDocumentsRepository indexedWordsRepository() {
+  public IndexedWordDocumentsRepository indexedWordDocumentsRepository() {
     return new IndexedWordDocumentsRepository();
   }
 }

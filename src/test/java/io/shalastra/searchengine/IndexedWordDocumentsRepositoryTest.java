@@ -1,6 +1,10 @@
 package io.shalastra.searchengine;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
+
+import javax.print.Doc;
 
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static io.shalastra.searchengine.repositories.IndexedWordDocumentsRepository.SPLIT_REGEX;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -51,6 +56,20 @@ public class IndexedWordDocumentsRepositoryTest {
 
     Word word = new Word("dog");
 
+    //Assertion is valid since all documents contain the word "dog"
     assertEquals(documents, indexedWordDocumentsRepository.get(word));
+  }
+
+  @Test
+  public void getDocumentLength_ShouldReturnNumberOfWords() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    Method getDocumentLengthMethod = IndexedWordDocumentsRepository.class.getDeclaredMethod("getDocumentLength", Document.class);
+    getDocumentLengthMethod.setAccessible(true);
+
+    Document document = documents.iterator().next();
+    int expectedLength = document.getDocument().split(SPLIT_REGEX).length;
+
+    int wordsNumber = (int) getDocumentLengthMethod.invoke(indexedWordDocumentsRepository, document);
+
+    assertEquals(expectedLength, wordsNumber);
   }
 }

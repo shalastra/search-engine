@@ -9,7 +9,7 @@ import io.shalastra.searchengine.models.Word;
 
 public class IndexedWordDocumentsRepository extends HashMap<Word, LinkedHashSet<Document>> {
 
-  private static final String SPLIT_REGEX = "\\P{L}+";
+  public static final String SPLIT_REGEX = "\\P{L}+";
 
   public void initializeInvertedIndex(Set<Document> documents) {
     for (Document document : documents) {
@@ -25,6 +25,10 @@ public class IndexedWordDocumentsRepository extends HashMap<Word, LinkedHashSet<
         put(word, documentsContainingGivenWord);
       });
     }
+  }
+
+  private int getDocumentLength(Document document) {
+    return splitDocument(document).size();
   }
 
   private List<Word> splitDocument(Document document) {

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static io.shalastra.searchengine.repositories.IndexedWordDocumentsRepository.SPLIT_REGEX;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -59,14 +58,11 @@ public class IndexedWordDocumentsRepositoryTest {
   }
 
   @Test
-  public void getDocumentLength_ShouldReturnNumberOfWords() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+  public void getDocumentLength_ShouldReturnNumberOfWords() {
     Document document = documents.iterator().next();
-    int expectedLength = document.getDocument().split(SPLIT_REGEX).length;
+    int expectedLength = document.splitDocument().size();
 
-    Method getDocumentLengthMethod = IndexedWordDocumentsRepository.class.getDeclaredMethod("getDocumentLength", Document.class);
-    getDocumentLengthMethod.setAccessible(true);
-
-    int wordsNumber = (int) getDocumentLengthMethod.invoke(indexedWordDocumentsRepository, document);
+    int wordsNumber = document.getDocumentLength();
 
     assertEquals(expectedLength, wordsNumber);
   }

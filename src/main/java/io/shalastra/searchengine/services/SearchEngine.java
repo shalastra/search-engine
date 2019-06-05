@@ -47,7 +47,7 @@ public class SearchEngine {
     });
   }
 
-  public void calculateWordFrequency(Word word, Document document) {
+  private void calculateWordFrequency(Word word, Document document) {
     HashMap<Document, Integer> wordFrequency = wordFrequencies.get(word);
 
     if (wordFrequency == null) {

@@ -10,6 +10,9 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Class responsible for indexing and saving documents
+ */
 @Service
 public class SearchEngine {
 
@@ -29,7 +32,14 @@ public class SearchEngine {
     this.invertedIndex = new HashMap<>();
   }
 
+  /**
+   * Update index with new Document
+   * More can be found: {https://en.wikipedia.org/wiki/Inverted_index}
+   *
+   * @param document - new document to add to the repository and the index
+   */
   public void updateInvertedIndex(Document document) {
+    // Add new document to the document repository
     documentRepository.add(document);
 
     document.splitDocument().forEach(word -> {
@@ -47,6 +57,12 @@ public class SearchEngine {
     });
   }
 
+  /**
+   * Perform search on the index for a given word
+   *
+   * @param word - query in form of single word
+   * @return list of sorted by TF-IDF fielnames or an empty list if word is not in the index
+   */
   public List<String> findByWord(Word word) {
     Set<Document> documentsContainingWord = invertedIndex.get(word);
 
@@ -62,6 +78,12 @@ public class SearchEngine {
     return new ArrayList<>();
   }
 
+  /**
+   * Count word frequency in a given document
+   *
+   * @param word to look for in the document
+   * @param document given during indexing
+   */
   private void calculateWordFrequency(Word word, Document document) {
     HashMap<Document, Integer> wordFrequency = wordFrequencies.get(word);
 
@@ -75,6 +97,13 @@ public class SearchEngine {
     wordFrequencies.put(word, wordFrequency);
   }
 
+  /**
+   * Perform sorting by TF-IDF on the list of documents containing searched word
+   *
+   * @param word - given word to search
+   * @param documents - list of documents containing the word
+   * @return list of filenames from sorted documents
+   */
   private List<String> sortByTFIDF(Word word, List<Document> documents) {
     List<Document> sortedDocuments = new ArrayList<>(documents);
     sortedDocuments.sort((doc1, doc2) -> {
@@ -87,10 +116,23 @@ public class SearchEngine {
     return getDocumentFilenames(sortedDocuments);
   }
 
+  /**
+   * Return final output of search for a given word
+   *
+   * @param sorted list of documents
+   * @return filenames in form of List of Strings
+   */
   private List<String> getDocumentFilenames(List<Document> sorted) {
     return sorted.stream().map(Document::getFilename).collect(Collectors.toList());
   }
 
+  /**
+   * Calculate TF-IDF for a given word in a given document
+   * More can be found: {https://en.wikipedia.org/wiki/Tf%E2%80%93idf}
+   * @param word
+   * @param document -
+   * @return TF-IDF value for a given word
+   */
   private double calculateTFIDF(Word word, Document document) {
     double tf = (double) wordFrequencies.get(word).get(document) / document.getDocumentLength();
     double idf = Math.log10((double) documentRepository.size() / (1 + getWordFrequencyInDocuments(word)));

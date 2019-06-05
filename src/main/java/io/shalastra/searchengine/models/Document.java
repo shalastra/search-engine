@@ -22,10 +22,17 @@ public class Document {
     this.filename = DOC + counter++;
   }
 
+  /**
+   * Split given document by words for indexing
+   * @return
+   */
   public List<Word> splitDocument() {
     return Stream.of(document.split(SPLIT_REGEX)).map(Word::new).collect(Collectors.toList());
   }
 
+  /**
+   * @return number of words in the document
+   */
   public int getDocumentLength() {
     return splitDocument().size();
   }

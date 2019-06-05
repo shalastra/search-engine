@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SearchEngine {
 
-  private DocumentRepository documents;
+  private DocumentRepository documentRepository;
 
   @Getter
   private HashMap<Word, HashMap<Document, Integer>> wordFrequencies;
@@ -23,14 +23,14 @@ public class SearchEngine {
 
   @Autowired
   public SearchEngine(DocumentRepository documentRepository) {
-    this.documents = documentRepository;
+    this.documentRepository = documentRepository;
 
     this.wordFrequencies = new HashMap<>();
     this.invertedIndex = new HashMap<>();
   }
 
   public void updateInvertedIndex(Document document) {
-    documents.saveDocument(document);
+    documentRepository.saveDocument(document);
 
     document.splitDocument().forEach(word -> {
       calculateWordFrequency(word, document);
@@ -47,6 +47,21 @@ public class SearchEngine {
     });
   }
 
+  public List<String> findByWord(Word word) {
+    Set<Document> documentsContainingWord = invertedIndex.get(word);
+
+    if (documentsContainingWord != null) {
+      List<Document> results = new ArrayList<>(documentsContainingWord);
+      if (documentsContainingWord.size() == 1) {
+        return getDocumentFilenames(results);
+      } else {
+        return sortByTFIDF(word, results);
+      }
+    }
+
+    return new ArrayList<>();
+  }
+
   private void calculateWordFrequency(Word word, Document document) {
     HashMap<Document, Integer> wordFrequency = wordFrequencies.get(word);
 
@@ -60,27 +75,31 @@ public class SearchEngine {
     wordFrequencies.put(word, wordFrequency);
   }
 
-  private int getWordFrequencyInDocuments(Word word) {
-    return invertedIndex.get(word).size();
-  }
-
-  private double calculateTFIDF(Word word, Document document) {
-    double tf = (double) wordFrequencies.get(word).get(document) / document.getDocumentLength();
-    double idf = Math.log10((double) documents.size() / (1 + getWordFrequencyInDocuments(word)));
-
-    return tf * idf;
-  }
-
-  private List<String> sortByTFIDF(Word word, Set<Document> documents) {
-    List<Document> sorted = new ArrayList<>(documents);
-
-    sorted.sort((doc1, doc2) -> {
+  private List<String> sortByTFIDF(Word word, List<Document> documents) {
+    List<Document> sortedDocuments = new ArrayList<>(documents);
+    sortedDocuments.sort((doc1, doc2) -> {
       double doc1TFIDF = calculateTFIDF(word, doc1);
       double doc2TFIDF = calculateTFIDF(word, doc2);
 
       return Double.compare(doc1TFIDF, doc2TFIDF);
     });
 
+    return getDocumentFilenames(sortedDocuments);
+  }
+
+  private List<String> getDocumentFilenames(List<Document> sorted) {
     return sorted.stream().map(Document::getFilename).collect(Collectors.toList());
+  }
+
+
+  private double calculateTFIDF(Word word, Document document) {
+    double tf = (double) wordFrequencies.get(word).get(document) / document.getDocumentLength();
+    double idf = Math.log10((double) documentRepository.size() / (1 + getWordFrequencyInDocuments(word)));
+
+    return tf * idf;
+  }
+
+  private int getWordFrequencyInDocuments(Word word) {
+    return invertedIndex.get(word).size();
   }
 }

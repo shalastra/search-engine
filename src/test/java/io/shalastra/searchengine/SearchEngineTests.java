@@ -16,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,10 +30,6 @@ public class SearchEngineTests {
   @Autowired
   private SearchEngine searchEngine;
 
-  @Before
-  public void setUp() {
-
-  }
 
   @Test
   public void saveDocumentsByContainingGivenWord() {
@@ -146,17 +143,45 @@ public class SearchEngineTests {
       IllegalAccessException, NoSuchMethodException {
     Word word = new Word("brown");
 
-    List<String> expectedList = Arrays.asList("document 1", "document 2");
-    Set<Document> documents = new LinkedHashSet<>(Arrays.asList(doc1, doc2));
+    List<String> expectedResults = Arrays.asList("document 1", "document 2");
+    List<Document> documents = Arrays.asList(doc1, doc2);
 
     searchEngine.updateInvertedIndex(doc1);
     searchEngine.updateInvertedIndex(doc2);
 
-    Method sortByTFIDFMethod = SearchEngine.class.getDeclaredMethod("sortByTFIDF", Word.class, Set.class);
+    Method sortByTFIDFMethod = SearchEngine.class.getDeclaredMethod("sortByTFIDF", Word.class, List.class);
     sortByTFIDFMethod.setAccessible(true);
 
     List<String> sortedDocumentsFilenames = (List<String>) sortByTFIDFMethod.invoke(searchEngine, word, documents);
 
-    assertEquals(expectedList, sortedDocumentsFilenames);
+    assertEquals(expectedResults, sortedDocumentsFilenames);
+  }
+
+  @Test
+  public void searchDocumentsForGivenWord_ShouldReturnSortedByTFIDFDocumentsContainingWord() {
+    Word word = new Word("fox");
+
+    List<String> expectedResults = Arrays.asList("document 1", "document 3");
+
+    searchEngine.updateInvertedIndex(doc1);
+    searchEngine.updateInvertedIndex(doc2);
+    searchEngine.updateInvertedIndex(doc3);
+
+    List<String> actualResults = searchEngine.findByWord(word);
+
+    assertEquals(expectedResults, actualResults);
+  }
+
+  @Test
+  public void searchDocumentsForGivenWord_ShouldReturnEmptyList() {
+    Word word = new Word("baby");
+
+    searchEngine.updateInvertedIndex(doc1);
+    searchEngine.updateInvertedIndex(doc2);
+    searchEngine.updateInvertedIndex(doc3);
+
+    List<String> actualResults = searchEngine.findByWord(word);
+
+    assertTrue(actualResults.isEmpty());
   }
 }

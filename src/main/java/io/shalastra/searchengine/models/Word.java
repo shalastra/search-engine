@@ -1,11 +1,13 @@
 package io.shalastra.searchengine.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class Word {
 
   private String word;
+
+  public Word(String word) {
+    this.word = word.toLowerCase();
+  }
 }

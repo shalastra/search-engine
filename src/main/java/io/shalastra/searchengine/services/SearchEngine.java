@@ -1,10 +1,7 @@
 package io.shalastra.searchengine.services;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-
-import javax.annotation.PostConstruct;
-import javax.print.Doc;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
@@ -72,5 +69,18 @@ public class SearchEngine {
     double idf = Math.log10((double) documents.size() / (1 + getWordFrequencyInDocuments(word)));
 
     return tf * idf;
+  }
+
+  private List<String> sortByTFIDF(Word word, Set<Document> documents) {
+    List<Document> sorted = new ArrayList<>(documents);
+
+    sorted.sort((doc1, doc2) -> {
+      double doc1TFIDF = calculateTFIDF(word, doc1);
+      double doc2TFIDF = calculateTFIDF(word, doc2);
+
+      return Double.compare(doc1TFIDF, doc2TFIDF);
+    });
+
+    return sorted.stream().map(Document::getFilename).collect(Collectors.toList());
   }
 }

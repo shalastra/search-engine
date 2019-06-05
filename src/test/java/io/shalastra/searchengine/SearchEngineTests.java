@@ -2,13 +2,12 @@ package io.shalastra.searchengine;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.*;
 
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
 import io.shalastra.searchengine.services.SearchEngine;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,17 @@ import static org.junit.Assert.assertEquals;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class SearchEngineTests {
 
-  @Autowired
-  private SearchEngine searchEngine;
-
   private static final Document doc1 = new Document("the brown fox jumped over the brown dog");
   private static final Document doc2 = new Document("the lazy brown dog sat in the corner");
   private static final Document doc3 = new Document("the red fox bit the lazy dog");
+
+  @Autowired
+  private SearchEngine searchEngine;
+
+  @Before
+  public void setUp() {
+
+  }
 
   @Test
   public void saveDocumentsByContainingGivenWord() {
@@ -73,7 +77,8 @@ public class SearchEngineTests {
   }
 
   @Test
-  public void getWordFrequencyInDocuments_ShouldReturnNumberOfDocuments() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+  public void getWordFrequencyInDocuments_ShouldReturnNumberOfDocuments() throws NoSuchMethodException,
+      InvocationTargetException, IllegalAccessException {
     Word word = new Word("brown");
     int expectedFrequency = 2;
 
@@ -134,5 +139,24 @@ public class SearchEngineTests {
     double actualTFIDF = (double) calculateTfIDFMethod.invoke(searchEngine, word, doc1);
 
     assertEquals(expectedTFIDF, actualTFIDF, 0);
+  }
+
+  @Test
+  public void sortDocumentsByTFIDFByWord_ShouldReturnDocumentListSortedByTFIDFForGivenWord() throws InvocationTargetException,
+      IllegalAccessException, NoSuchMethodException {
+    Word word = new Word("brown");
+
+    List<String> expectedList = Arrays.asList("document 1", "document 2");
+    Set<Document> documents = new LinkedHashSet<>(Arrays.asList(doc1, doc2));
+
+    searchEngine.updateInvertedIndex(doc1);
+    searchEngine.updateInvertedIndex(doc2);
+
+    Method sortByTFIDFMethod = SearchEngine.class.getDeclaredMethod("sortByTFIDF", Word.class, Set.class);
+    sortByTFIDFMethod.setAccessible(true);
+
+    List<String> sortedDocumentsFilenames = (List<String>) sortByTFIDFMethod.invoke(searchEngine, word, documents);
+
+    assertEquals(expectedList, sortedDocumentsFilenames);
   }
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 
 import javax.annotation.PostConstruct;
+import javax.print.Doc;
 
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SearchEngine {
 
-  @Autowired
   private DocumentRepository documents;
 
   @Getter
@@ -24,10 +24,12 @@ public class SearchEngine {
   @Getter
   private HashMap<Word, LinkedHashSet<Document>> invertedIndex;
 
-  @PostConstruct
-  private void initialize() {
-    wordFrequencies = new HashMap<>();
-    invertedIndex = new HashMap<>();
+  @Autowired
+  public SearchEngine(DocumentRepository documentRepository) {
+    this.documents = documentRepository;
+
+    this.wordFrequencies = new HashMap<>();
+    this.invertedIndex = new HashMap<>();
   }
 
   public void updateInvertedIndex(Document document) {
@@ -63,5 +65,12 @@ public class SearchEngine {
 
   private int getWordFrequencyInDocuments(Word word) {
     return invertedIndex.get(word).size();
+  }
+
+  private double calculateTFIDF(Word word, Document document) {
+    double tf = (double) wordFrequencies.get(word).get(document) / document.getDocumentLength();
+    double idf = Math.log10((double) documents.size() / (1 + getWordFrequencyInDocuments(word)));
+
+    return tf * idf;
   }
 }

@@ -30,7 +30,7 @@ public class SearchEngine {
   }
 
   public void updateInvertedIndex(Document document) {
-    documentRepository.saveDocument(document);
+    documentRepository.add(document);
 
     document.splitDocument().forEach(word -> {
       calculateWordFrequency(word, document);
@@ -90,7 +90,6 @@ public class SearchEngine {
   private List<String> getDocumentFilenames(List<Document> sorted) {
     return sorted.stream().map(Document::getFilename).collect(Collectors.toList());
   }
-
 
   private double calculateTFIDF(Word word, Document document) {
     double tf = (double) wordFrequencies.get(word).get(document) / document.getDocumentLength();

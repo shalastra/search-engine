@@ -7,7 +7,6 @@ import java.util.*;
 import io.shalastra.searchengine.models.Document;
 import io.shalastra.searchengine.models.Word;
 import io.shalastra.searchengine.services.SearchEngine;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ public class SearchEngineTests {
 
   @Autowired
   private SearchEngine searchEngine;
-
 
   @Test
   public void saveDocumentsByContainingGivenWord() {

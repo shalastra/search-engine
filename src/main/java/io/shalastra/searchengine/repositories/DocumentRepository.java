@@ -6,9 +6,4 @@ import io.shalastra.searchengine.models.Document;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DocumentRepository extends ArrayList<Document> {
-
-  public void saveDocument(Document document) {
-    add(document);
-  }
-}
+public class DocumentRepository extends ArrayList<Document> { }

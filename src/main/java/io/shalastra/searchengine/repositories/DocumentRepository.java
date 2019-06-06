@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
  * Repository for storing all added documents
  */
 @Repository
-public class DocumentRepository extends ArrayList<Document> { }
+public class DocumentRepository extends ArrayList<Document> {
+}

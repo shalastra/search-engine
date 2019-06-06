@@ -67,6 +67,7 @@ public class SearchEngine {
    * Perform search on the index for a given word
    *
    * @param word - query in form of single word
+   *
    * @return list of sorted by TF-IDF fielnames or an empty list if word is not in the index
    */
   public List<String> findByWord(Word word) {
@@ -87,7 +88,7 @@ public class SearchEngine {
   /**
    * Count word frequency in a given document
    *
-   * @param word to look for in the document
+   * @param word     to look for in the document
    * @param document given during indexing
    */
   private void calculateWordFrequency(Word word, Document document) {
@@ -106,8 +107,9 @@ public class SearchEngine {
   /**
    * Perform sorting by TF-IDF on the list of documents containing searched word
    *
-   * @param word - given word to search
+   * @param word      - given word to search
    * @param documents - list of documents containing the word
+   *
    * @return list of filenames from sorted documents
    */
   private List<String> sortByTFIDF(Word word, List<Document> documents) {
@@ -126,6 +128,7 @@ public class SearchEngine {
    * Return final output of search for a given word
    *
    * @param sorted list of documents
+   *
    * @return filenames in form of List of Strings
    */
   private List<String> getDocumentFilenames(List<Document> sorted) {
@@ -135,8 +138,10 @@ public class SearchEngine {
   /**
    * Calculate TF-IDF for a given word in a given document
    * More can be found: {https://en.wikipedia.org/wiki/Tf%E2%80%93idf}
+   *
    * @param word
    * @param document -
+   *
    * @return TF-IDF value for a given word
    */
   private double calculateTFIDF(Word word, Document document) {

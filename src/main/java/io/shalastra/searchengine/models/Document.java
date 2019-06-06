@@ -6,34 +6,43 @@ import java.util.stream.Stream;
 
 import lombok.Data;
 
+/**
+ * Document Model class storing text and filename of document
+ */
 @Data
 public class Document {
 
   public static final String SPLIT_REGEX = "\\P{L}+";
   private static final String DOC = "document ";
 
-  private static int counter = 0;
-
-  private String filename;
-  private String document;
-
-  public Document(String document) {
-    this.document = document;
-    this.filename = DOC + counter++;
-  }
-
   /**
-   * Split given document by words for indexing
-   * @return
+   * Static field for increasing document filename number
    */
-  public List<Word> splitDocument() {
-    return Stream.of(document.split(SPLIT_REGEX)).map(Word::new).collect(Collectors.toList());
+  private static int counter = 1;
+
+  private final String filename;
+  private String text;
+
+  public Document(String text) {
+    this.text = text;
+    this.filename = DOC + counter;
+
+    counter++;
   }
 
   /**
-   * @return number of words in the document
+   * Split given text by words for indexing
+   *
+   * @return list of single words, wrapped in {@link Word} object
+   */
+  public List<Word> splitText() {
+    return Stream.of(text.split(SPLIT_REGEX)).map(Word::new).collect(Collectors.toList());
+  }
+
+  /**
+   * @return number of words in the text
    */
   public int getDocumentLength() {
-    return splitDocument().size();
+    return splitText().size();
   }
 }

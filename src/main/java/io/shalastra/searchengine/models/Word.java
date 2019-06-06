@@ -2,6 +2,9 @@ package io.shalastra.searchengine.models;
 
 import lombok.Data;
 
+/**
+ * Single word wrapper with lowercase operation
+ */
 @Data
 public class Word {
 

@@ -17,7 +17,7 @@ Basic operations are provided in form of REST API. Support operations:
 - `get list of all Documents`
 - `search for a given word in the inverted index`
 
-####COMMANDS EXAMPLES
+#### COMMANDS EXAMPLES
 You need a running application to execute commands.
 
 To add a new document with text _"the red fox bit the lazy dog"_ following command has to be executed:    

@@ -18,9 +18,15 @@ public class SearchEngine {
 
   private DocumentRepository documentRepository;
 
+  /**
+   * Store all words frequencies in each document
+   */
   @Getter
   private HashMap<Word, HashMap<Document, Integer>> wordFrequencies;
 
+  /**
+   * Store all words with set of documents word appears
+   */
   @Getter
   private HashMap<Word, LinkedHashSet<Document>> invertedIndex;
 
@@ -42,7 +48,7 @@ public class SearchEngine {
     // Add new document to the document repository
     documentRepository.add(document);
 
-    document.splitDocument().forEach(word -> {
+    document.splitText().forEach(word -> {
       calculateWordFrequency(word, document);
 
       LinkedHashSet<Document> documentsContainingGivenWord = invertedIndex.get(word);

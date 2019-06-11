@@ -82,7 +82,7 @@ public class SearchEngine {
       }
     }
 
-    return new ArrayList<>();
+    return Collections.emptyList();
   }
 
   /**
